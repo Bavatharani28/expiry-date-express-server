@@ -8,14 +8,23 @@ const productRoutes = require('./src/routes/product.routes');
 
 dotenv.config();
 
-// Connect to MongoDB
+// Connect to MongoDB (Atlas or local fallback)
 connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
-app.use(cors());
+// CORS configuration (supports Netlify URL or permissive fallback)
+const allowedOrigins = process.env.CORS_ORIGIN || process.env.CLIENT_URL;
+app.use(
+  cors({
+    origin: allowedOrigins
+      ? allowedOrigins.split(',').map((url) => url.trim())
+      : '*',
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -26,13 +35,14 @@ setupSwagger(app);
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 
-// Health Check Route
-app.get('/', (req, res) => {
+// Health Check Routes (for Render, uptime monitors, etc.)
+app.get(['/', '/health'], (req, res) => {
   res.status(200).json({
     status: 'success',
-    message: 'Expiry Date Manager Express Server is running',
-    port: PORT,
-    docs: `http://localhost:${PORT}/api-docs`,
+    message: 'Expiry Date Manager API is active and healthy',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    docs: '/api-docs',
   });
 });
 
@@ -47,8 +57,8 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📚 Swagger docs available at /api-docs`);
 });
 
 module.exports = app;

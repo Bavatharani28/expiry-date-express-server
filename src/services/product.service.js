@@ -38,7 +38,7 @@ class ProductService {
    * @returns {Promise<Object>} Created product
    */
   async addProduct(userId, body) {
-    const { title, upcCode, category, expiryDate, quantity, notes } = body;
+    const { title, upcCode, category, expiryDate, quantity, price, notes } = body;
 
     if (!title || !title.trim()) {
       const error = new Error('Product title is required');
@@ -59,6 +59,7 @@ class ProductService {
       category: category || 'Groceries',
       expiryDate: new Date(expiryDate),
       quantity: parseInt(quantity, 10) || 1,
+      price: parseFloat(price) || 0,
       notes: notes ? notes.trim() : '',
     };
 
@@ -95,6 +96,7 @@ class ProductService {
     if (body.category !== undefined) updateData.category = body.category;
     if (body.expiryDate !== undefined) updateData.expiryDate = new Date(body.expiryDate);
     if (body.quantity !== undefined) updateData.quantity = parseInt(body.quantity, 10) || 1;
+    if (body.price !== undefined) updateData.price = parseFloat(body.price) || 0;
     if (body.notes !== undefined) updateData.notes = body.notes.trim();
 
     if (Object.keys(updateData).length === 0) {

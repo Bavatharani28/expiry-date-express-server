@@ -36,6 +36,11 @@ router.use(authMiddleware);
  *           type: integer
  *           minimum: 1
  *           example: 2
+ *         price:
+ *           type: number
+ *           minimum: 0
+ *           example: 149.50
+ *           description: Price / MRP of the product
  *         notes:
  *           type: string
  *           example: Keep refrigerated
@@ -63,6 +68,9 @@ router.use(authMiddleware);
  *         quantity:
  *           type: integer
  *           example: 2
+ *         price:
+ *           type: number
+ *           example: 149.50
  *         notes:
  *           type: string
  *           example: Keep refrigerated

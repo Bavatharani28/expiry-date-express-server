@@ -1,18 +1,24 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+const serverUrl =
+  process.env.SERVER_URL ||
+  process.env.RENDER_EXTERNAL_URL ||
+  `http://localhost:${process.env.PORT || 5001}`;
+
 const options = {
   definition: {
     openapi: '3.0.0',
     info: {
       title: 'Expiry Date Manager API',
       version: '1.0.0',
-      description: 'REST API documentation for Expiry Date Manager application including AuthN/AuthZ and item management.',
+      description:
+        'REST API documentation for Expiry Date Manager application including AuthN/AuthZ and product/inventory management.',
     },
     servers: [
       {
-        url: 'http://localhost:5001',
-        description: 'Development Server',
+        url: serverUrl,
+        description: process.env.NODE_ENV === 'production' ? 'Production Server' : 'Local Development Server',
       },
     ],
     components: {
